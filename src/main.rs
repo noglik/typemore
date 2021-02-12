@@ -5,14 +5,25 @@ use termion::async_stdin;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
-use termion::{clear, color, cursor, style};
+use termion::{clear, color, cursor};
+
+static TEXT: &str = "Hello world!";
+
+const CORRECT: color::Green = color::Green;
 
 fn main() {
     let mut stdin = async_stdin().keys();
     let mut stdout = stdout().into_raw_mode().unwrap();
 
-    write!(stdout, "{}{}Hello world!", clear::All, cursor::Goto(1, 1)).unwrap();
-    write!(stdout, "{}", cursor::Goto(1, 1)).unwrap();
+    write!(
+        stdout,
+        "{clear}{pos}{text}",
+        clear = clear::All,
+        pos = cursor::Goto(1, 1),
+        text = TEXT
+    )
+    .unwrap();
+    write!(stdout, "{pos}", pos = cursor::Goto(1, 1)).unwrap();
     stdout.flush().unwrap();
 
     loop {
@@ -21,9 +32,10 @@ fn main() {
         if let Some(Ok(key)) = input {
             match key {
                 Key::Char(c) => {
-                    write!(stdout, "{}{}", color::Fg(color::Green), c).unwrap();
-                    stdout.lock().flush().unwrap();
+                    write!(stdout, "{color}{}", c, color = color::Fg(CORRECT)).unwrap();
+                    stdout.flush().unwrap();
                 }
+                Key::Backspace => {}
                 Key::Ctrl('c') => break,
                 _ => {}
             }
