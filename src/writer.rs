@@ -31,18 +31,6 @@ pub fn read_keys(text: String) {
 
     for c in stdin.events() {
         let (x, _y) = stdout.cursor_pos().unwrap();
-        if usize::from(x) > length {
-            write!(
-                stdout,
-                "{pos}{color}Thanks!",
-                pos = cursor::Goto(1, 2),
-                color = color::Fg(DEFAULT)
-            )
-            .unwrap();
-            stdout.flush().unwrap();
-            break;
-        }
-
         let key = c.unwrap();
 
         match key {
@@ -69,6 +57,18 @@ pub fn read_keys(text: String) {
             }
             event::Event::Key(Key::Ctrl('c')) => break,
             _ => {}
+        }
+
+        if usize::from(x) > length - 2 {
+            write!(
+                stdout,
+                "{pos}{color}Thanks!",
+                pos = cursor::Goto(1, 2),
+                color = color::Fg(DEFAULT)
+            )
+            .unwrap();
+            stdout.flush().unwrap();
+            break;
         }
 
         stdout.flush().unwrap();
