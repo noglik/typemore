@@ -59,7 +59,7 @@ pub fn read_keys(text: String) {
             _ => {}
         }
 
-        if usize::from(x) > length - 2 {
+        if usize::from(x) > length - 1 {
             write!(
                 stdout,
                 "{pos}{color}Thanks!",
