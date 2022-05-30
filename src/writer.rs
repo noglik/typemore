@@ -1,11 +1,11 @@
 extern crate termion;
 
-use std::io::{stdin, stdout, Write, Stdout};
+use std::io::{stdout, Write, Stdout};
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::{IntoRawMode, RawTerminal};
 use termion::cursor::DetectCursorPos;
-use termion::{clear, color, cursor, event};
+use termion::{clear, color, cursor, event, get_tty};
 
 use crate::story::{Story, Status};
 
@@ -34,7 +34,8 @@ impl View {
 
     // TODO: add stats about accuracy and speed
     pub fn read(&mut self) -> () {
-        for c in stdin().events() {
+        let tty = get_tty().unwrap();
+        for c in tty.events() {
             let key = c.unwrap();
 
             match key {
